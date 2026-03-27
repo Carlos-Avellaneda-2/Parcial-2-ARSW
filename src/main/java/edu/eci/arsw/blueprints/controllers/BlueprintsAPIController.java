@@ -45,9 +45,11 @@ public class BlueprintsAPIController {
     @GetMapping("/{author}/{bpname}")
     public ResponseEntity<?> byAuthorAndName(@PathVariable String author, @PathVariable String bpname) {
         try {
-            return ResponseEntity.ok(services.getBlueprint(author, bpname));
+            ApiResponse<Blueprint> respuesta = new ApiResponse<Blueprint>(200,"executed ok",services.getBlueprint(author, bpname));
+            return ResponseEntity.ok(respuesta);
         } catch (BlueprintNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+            ApiResponse<Blueprint> respuesta = new ApiResponse<Blueprint>(404,"Not found",null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
         }
     }
 
@@ -57,9 +59,11 @@ public class BlueprintsAPIController {
         try {
             Blueprint bp = new Blueprint(req.author(), req.name(), req.points());
             services.addNewBlueprint(bp);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            ApiResponse<String> respuesta = new ApiResponse<String>(201,"Created","Archivo creado correctamente");
+            return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (BlueprintPersistenceException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));
+            ApiResponse<String> respuesta = new ApiResponse<String>(400,"Bad Request",e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
         }
     }
 
@@ -69,9 +73,11 @@ public class BlueprintsAPIController {
                                       @RequestBody Point p) {
         try {
             services.addPoint(author, bpname, p.x(), p.y());
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+            ApiResponse<String> respuesta = new ApiResponse<String>(202,"Accepted","Archivo actualizado correctamente");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(respuesta);
         } catch (BlueprintNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+            ApiResponse<String> respuesta = new ApiResponse<String>(404,"Not Found",e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
         }
     }
 
