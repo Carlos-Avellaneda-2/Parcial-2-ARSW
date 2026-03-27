@@ -31,11 +31,13 @@ public class BlueprintsAPIController {
 
     // GET /blueprints/{author}
     @GetMapping("/{author}")
-    public ResponseEntity<?> byAuthor(@PathVariable String author) {
+    public  ResponseEntity<?> byAuthor(@PathVariable String author) {
         try {
-            return ResponseEntity.ok(services.getBlueprintsByAuthor(author));
+            ApiResponse<Set<Blueprint>> respuesta = new ApiResponse<Set<Blueprint>>(200,"executed ok",services.getBlueprintsByAuthor(author));
+            return  ResponseEntity.ok(respuesta);
         } catch (BlueprintNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+            ApiResponse<Set<Blueprint>> respuesta = new ApiResponse<Set<Blueprint>>(404,"Not found",null);
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
         }
     }
 
