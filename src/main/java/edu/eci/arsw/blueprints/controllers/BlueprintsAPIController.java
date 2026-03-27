@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/blueprints")
+@RequestMapping("api/v1/blueprints")
 public class BlueprintsAPIController {
 
     private final BlueprintsServices services;
@@ -24,8 +24,9 @@ public class BlueprintsAPIController {
 
     // GET /blueprints
     @GetMapping
-    public ResponseEntity<Set<Blueprint>> getAll() {
-        return ResponseEntity.ok(services.getAllBlueprints());
+    public ApiResponse<Set<Blueprint>> getAll() {
+        ApiResponse<Set<Blueprint>> respuesta = new ApiResponse<Set<Blueprint>>(200,"executed ok",services.getAllBlueprints());
+        return respuesta;
     }
 
     // GET /blueprints/{author}
